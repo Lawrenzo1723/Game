@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchQuestions() {
         try {
-            const response = await fetch('https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/question%20in%20Json.json');
+            const response = await fetch('https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/question%20in%20Json.json');
             questions = await response.json();
         } catch (error) {
             console.error("Error loading questions:", error);
@@ -51,14 +51,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
         lifeDeductedThisRound = false;
-        startBombs(); // Start bombs moving toward the cat for the new question
+        startBombs();
     }
 
     function updateLives() {
         livesContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
             const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/f6b87741b31ce1bc2f26714828e2bff364a0ed4d/game/assets/images/Cat_life.png";
+            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
     }
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let frame = 1;
         explosionAnimation.style.display = "block";
         const explosionInterval = setInterval(() => {
-            explosionAnimation.style.backgroundImage = `url(https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/game/assets/explosions/Explosion${frame}.png)`;
+            explosionAnimation.style.backgroundImage = `url(https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/explosions/Explosion${frame}.png)`;
             frame++;
             if (frame > 6) {
                 clearInterval(explosionInterval);
@@ -115,12 +115,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     function showRetryButton() {
         playButton.textContent = "Retry";
         playButton.style.display = "block";
-        playButton.removeEventListener("click", startGame); // Remove any previous event listeners
-        playButton.addEventListener("click", resetGame); // Add reset event listener
+        playButton.removeEventListener("click", startGame);
+        playButton.addEventListener("click", resetGame);
     }
 
     function resetGame() {
-        // Reset all game state variables
         score = 0;
         lives = 9;
         currentQuestionIndex = 0;
@@ -129,10 +128,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         lifeDeductedThisRound = false;
 
         updateLives();
-        resetBombs(); // Reset bomb animations
+        resetBombs();
         loadQuestion();
 
-        // Hide the retry button and restart the music
         playButton.style.display = "none";
         sounds.music.currentTime = 0;
         sounds.music.play();
@@ -141,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function resetBombs() {
         Object.values(bombs).forEach(bomb => {
             bomb.style.animation = 'none';
-            void bomb.offsetWidth; // Trigger reflow to reset animation
+            void bomb.offsetWidth;
             bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
         });
     }

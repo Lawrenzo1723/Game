@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchQuestions() {
         try {
-            const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/question%20in%20Json.json');
+            const response = await fetch('https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/question%20in%20Json.json');
             questions = await response.json();
         } catch (error) {
             console.error("Error loading questions:", error);
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         livesContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
             const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Cat_life.png";
+            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
     }
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let frame = 1;
         explosionAnimation.style.display = "block";
         const explosionInterval = setInterval(() => {
-            explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/explosions/Explosion${frame}.png)`;
+            explosionAnimation.style.backgroundImage = `url(https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/game/assets/explosions/Explosion${frame}.png)`;
             frame++;
             if (frame > 6) {
                 clearInterval(explosionInterval);

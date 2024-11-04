@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         livesContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
             const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/game/assets/images/Cat_life.png";
+            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/f6b87741b31ce1bc2f26714828e2bff364a0ed4d/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
     }

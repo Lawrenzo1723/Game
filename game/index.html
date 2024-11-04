@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPM Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container" class="game-container">
+        <div id="score-lives">
+            <p>Score: <span id="score">0</span></p>
+            <div id="lives-container">
+                <!-- Lives icons will be added dynamically in JavaScript -->
+            </div>
+        </div>
+        <div id="question-container">
+            <h1 id="question">Question will appear here</h1>
+            <div id="options">
+                <!-- Options text will be added dynamically in JavaScript -->
+            </div>
+        </div>
+        <div class="cat" id="cat">
+            <img src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Cat_Sad.png" alt="Cat" id="catImage">
+        </div>
+        <div id="explosion-animation" class="explosion"></div>
+        
+        <!-- Bomb images representing each option -->
+        <img src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Bomb%20A.png" class="bomb" id="bombA" alt="Bomb A">
+        <img src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Bomb%20B.png" class="bomb" id="bombB" alt="Bomb B">
+        <img src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Bomb%20C.png" class="bomb" id="bombC" alt="Bomb C">
+        <img src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Bomb%20D.png" class="bomb" id="bombD" alt="Bomb D">
+    </div>
+    <button id="play-button">Play!</button>
+
+    <!-- Audio files for sounds -->
+    <audio id="explosionSound" src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/sounds/Sound_Explosion.wav"></audio>
+    <audio id="correctAnswerSound" src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/sounds/Sound_Correct_Answer.wav"></audio>
+    <audio id="gameMusic" src="https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/sounds/Sound_GameMusic.wav" loop></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

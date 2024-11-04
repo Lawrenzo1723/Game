@@ -1,0 +1,108 @@
+body, html {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.game-container {
+    position: relative;
+    width: 90vw;
+    height: 90vh;
+    background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Background_.jpg');
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#score-lives {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+#lives-container {
+    display: flex;
+    gap: 5px;
+}
+
+#lives-container img {
+    width: 25px;
+    height: 25px;
+}
+
+#question-container {
+    position: absolute;
+    top: 5%;
+    text-align: center;
+    width: 80%;
+}
+
+#options {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.cat {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+}
+
+#catImage {
+    width: 100%;
+    height: 100%;
+}
+
+.bomb {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+#bombA { top: 10px; left: 10px; animation: moveToCenter 5s linear infinite; }
+#bombB { top: 10px; right: 10px; animation: moveToCenter 5s linear infinite; }
+#bombC { bottom: 10px; left: 10px; animation: moveToCenter 5s linear infinite; }
+#bombD { bottom: 10px; right: 10px; animation: moveToCenter 5s linear infinite; }
+
+/* Keyframe animations to move bombs to the center */
+@keyframes moveToCenter {
+    to {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+#explosion-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    display: none;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 5px); }
+    40% { transform: translate(5px, -5px); }
+    60% { transform: translate(-5px, -5px); }
+    80% { transform: translate(5px, 5px); }
+}
+
+.shake {
+    animation: shake 0.5s;
+}

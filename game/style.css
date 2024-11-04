@@ -11,7 +11,7 @@ body, html {
     position: relative;
     width: 90vw;
     height: 90vh;
-    background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Background_.jpg');
+    background-image: url('https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/game/assets/images/Background.jpeg');
     background-size: cover;
     display: flex;
     justify-content: center;

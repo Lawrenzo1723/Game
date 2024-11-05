@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
-            optionText.textContent = `${option}: ${questionData[`Option ${option}`]}`;
+            optionText.textContent = `${option}: ${questionData[`Option ${option}`] || ''}`;
             optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
             optionsContainer.appendChild(optionText);
 
@@ -66,8 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function triggerExplosion(bomb) {
-        // Hide the bomb and play explosion animation
-        bomb.style.display = "none";
+        bomb.style.display = "none"; // Hide the bomb after explosion
         explosionAnimation.style.display = "block";
         explosionAnimation.style.top = bomb.offsetTop + 'px';
         explosionAnimation.style.left = bomb.offsetLeft + 'px';
@@ -79,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function handleBombCollision(bomb) {
-        // Only deduct a life if the bomb collides with the cat and life has not been deducted
         if (!gameActive || lifeDeductedThisRound) return;
         lives--;
         lifeDeductedThisRound = true;

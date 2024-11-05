@@ -31,9 +31,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function fetchQuestions() {
         try {
             const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/questions.json');
+            if (!response.ok) {
+                throw new Error("Failed to fetch questions");
+            }
             questions = await response.json();
         } catch (error) {
             console.error("Error loading questions:", error);
+            questions = [
+                {
+                    "Question": "Sample Question 1",
+                    "Option A": "Answer A",
+                    "Option B": "Answer B",
+                    "Option C": "Answer C",
+                    "Option D": "Answer D",
+                    "Correct Answer": "A",
+                    "Explanation": "Explanation for answer A"
+                }
+            ];
         }
     }
 
@@ -157,9 +171,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function startGame() {
-        fetchQuestions();
-        resetGame();
-        monitorBombs();
+        fetchQuestions().then(() => {
+            resetGame();
+            monitorBombs();
+        });
     }
 
     playButton.addEventListener("click", startGame);

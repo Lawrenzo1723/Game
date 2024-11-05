@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         lifeDeductedThisRound = false;
-        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
     function updateLives() {
@@ -81,21 +80,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         playExplosionSound();
         
         bomb.style.pointerEvents = "none";
+        bomb.style.visibility = "hidden"; // Hide bomb during explosion animation
         
         // Explosion animation sequence
         let frame = 1;
-        bomb.style.display = "none";
-        explosionAnimation.style.display = "block"; // Display explosion animation over the bomb's position
+        explosionAnimation.style.display = "block"; 
+        explosionAnimation.style.position = "absolute"; 
+        explosionAnimation.style.left = `${bomb.offsetLeft}px`; 
+        explosionAnimation.style.top = `${bomb.offsetTop}px`; 
+
         const explosionInterval = setInterval(() => {
             if (frame <= 6) {
                 explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/Game/blob/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion${frame}.png)`;
                 frame++;
             } else {
                 clearInterval(explosionInterval);
-                explosionAnimation.style.display = "none";  // Hide explosion after finishing
-                bomb.classList.remove("exploding");
+                explosionAnimation.style.display = "none"; 
+                bomb.style.visibility = "visible"; // Make bomb visible again for next round
             }
-        }, 100);  // Switch frames every 100ms
+        }, 100); // Switch frames every 100ms
     }
 
     function handleBombCollision(bomb) {

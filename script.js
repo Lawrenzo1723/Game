@@ -18,13 +18,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 8000; // Reduced speed for easier observation
+    let gameSpeed = 12000;
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
     let lives = 3;
     let gameActive = false;
-    let lifeDeductedThisRound = false;
+    let lifeDeductedThisRound = false; // Flag to control life deduction per question round
 
     async function fetchQuestions() {
         try {
@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
 
+        lifeDeductedThisRound = false; // Reset life deduction flag for new question round
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
-        lifeDeductedThisRound = false;
     }
 
     function updateLives() {
@@ -69,14 +69,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         console.log("Explosion triggered on bomb:", bomb);
-        bomb.style.display = "none"; // Hide the bomb
+        bomb.style.display = "none"; // Hide the bomb after explosion
         sounds.explosion.play();
     }
 
     function handleBombCollision(bomb) {
-        if (!gameActive || lifeDeductedThisRound) return;
+        if (lifeDeductedThisRound) return; // Ensure only one life deduction per question round
+
+        // Deduct a life if a bomb reaches the center (cat's position)
         lives--;
-        lifeDeductedThisRound = true;
+        lifeDeductedThisRound = true; // Mark life deduction for this round
         console.log("Life lost due to bomb collision. Remaining lives:", lives);
         updateLives();
         checkGameStatus();
@@ -120,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         bomb.style.display = 'block';
         bomb.style.animation = 'none';
         void bomb.offsetWidth; // Trigger reflow to reset animation
-        bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
+        bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`; // Restart animation
     }
 
     function resetBombs() {

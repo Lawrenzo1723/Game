@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("Game initialized");
+
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 12000;
+    let gameSpeed = 10000;
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -51,9 +52,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
+
+            // Ensure each bomb is clickable for answer selection
+            bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
         });
 
-        lifeDeductedThisRound = false; // Reset flag for each question
+        lifeDeductedThisRound = false;
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
@@ -78,9 +82,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("Life already deducted for this round; no further deductions.");
             return;
         }
-        
+
         lives--;
-        lifeDeductedThisRound = true; // Mark this round as having a life deduction
+        lifeDeductedThisRound = true;
         console.log("Life lost due to bomb collision. Remaining lives:", lives);
         updateLives();
         checkGameStatus();
@@ -125,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         bomb.style.animation = 'none';
         void bomb.offsetWidth; // Trigger reflow to reset animation
         bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-        bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true }); // Listen once per animation end
+        bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true });
     }
 
     function resetBombs() {

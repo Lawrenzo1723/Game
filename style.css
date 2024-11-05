@@ -88,15 +88,12 @@ body, html {
 }
 
 #bombA, #bombB, #bombC, #bombD {
-    animation: moveToCenter 10s linear forwards; /* Matches the 10s gameSpeed */
+    animation: moveToCenter 12s linear forwards; /* Matches the 12s gameSpeed */
 }
 
 /* Explosion animation styling */
 #explosion-animation {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 150px;
     height: 150px;
     background-size: cover;

@@ -50,7 +50,7 @@ body, html {
     margin-top: 10px;
 }
 
-/* Cat image styling */
+/* Cat styling */
 .cat {
     position: absolute;
     top: 50%;
@@ -73,17 +73,13 @@ body, html {
     cursor: pointer;
 }
 
-/* Position each bomb at a screen corner */
 #bombA { top: 0; left: 0; }
 #bombB { top: 0; right: 0; }
 #bombC { bottom: 0; left: 0; }
 #bombD { bottom: 0; right: 0; }
 
-/* Keyframe animation to move bombs to the center */
+/* Animation to move bombs to the center */
 @keyframes moveToCenter {
-    from {
-        transform: translate(0, 0);
-    }
     to {
         top: 50%;
         left: 50%;
@@ -107,7 +103,7 @@ body, html {
     display: none;
 }
 
-/* Shake effect when a bomb collides with the cat */
+/* Shake effect for collision */
 @keyframes shake {
     0%, 100% { transform: translate(0, 0); }
     20% { transform: translate(-5px, 5px); }

@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Game is loading..."); // Initial log to indicate the script is loaded
+    
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -30,11 +32,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchQuestions() {
         try {
+            console.log("Fetching questions...");
             const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/questions.json');
+            
             if (!response.ok) {
-                throw new Error("Failed to fetch questions");
+                throw new Error(`Failed to fetch questions: ${response.status} ${response.statusText}`);
             }
+            
             questions = await response.json();
+            console.log("Questions loaded successfully:", questions);
         } catch (error) {
             console.error("Error loading questions:", error);
             questions = [
@@ -52,9 +58,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function loadQuestion() {
-        if (questions.length === 0) return;
+        if (questions.length === 0) {
+            console.warn("No questions available to load.");
+            return;
+        }
+
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
+        console.log("Loading question:", questionData);
 
         optionsContainer.innerHTML = '';
         ['A', 'B', 'C', 'D'].forEach(option => {
@@ -75,9 +86,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
+        console.log("Lives updated:", lives);
     }
 
     function triggerExplosion() {
+        console.log("Explosion triggered");
         gameContainer.classList.add("shake");
 
         let frame = 1;
@@ -103,6 +116,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         triggerExplosion();
         sounds.explosion.play();
 
+        console.log("Bomb collided with cat. Lives left:", lives);
+
         if (lives > 0) {
             setTimeout(() => {
                 resetBombs();
@@ -123,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         gameActive = false;
         sounds.music.pause();
         alert("Game Over! Your score: " + score);
+        console.log("Game Over. Final score:", score);
         showRetryButton();
     }
 
@@ -148,6 +164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         playButton.style.display = "none";
         sounds.music.currentTime = 0;
         sounds.music.play();
+        console.log("Game reset. Score:", score, "Lives:", lives);
     }
 
     function resetBombs() {
@@ -156,21 +173,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             void bomb.offsetWidth;
             bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
         });
+        console.log("Bombs reset.");
     }
 
     function startBombs() {
         Object.values(bombs).forEach(bomb => {
             bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
         });
+        console.log("Bombs started moving towards the cat.");
     }
 
     function monitorBombs() {
         Object.values(bombs).forEach(bomb => {
             bomb.addEventListener("animationend", handleBombCollision);
         });
+        console.log("Bomb collision monitoring activated.");
     }
 
     function startGame() {
+        console.log("Starting game...");
         fetchQuestions().then(() => {
             resetGame();
             monitorBombs();
@@ -180,5 +201,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     playButton.addEventListener("click", startGame);
 
     sounds.music.volume = 0.5;
-    sounds.music.play();
+    console.log("Background music volume set to 0.5");
 });

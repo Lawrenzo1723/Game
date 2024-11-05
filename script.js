@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 10000;
+    let gameSpeed = 30000; // 30 seconds for bombs to reach the cat
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
-    let lives = 3;
+    let lives = 9;
     let gameActive = false;
     let lifeDeductedThisRound = false;
 
@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
 
-            // Ensure each bomb is clickable for answer selection
             bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
         });
 
@@ -77,12 +76,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         bomb.style.pointerEvents = "none"; // Disable clicking while exploding
         sounds.explosion.play();
 
-        // Remove explosion effect after animation ends
+        // Keep the bomb hidden until the next question
         setTimeout(() => {
             bomb.classList.remove("exploding");
             bomb.style.display = "none";  // Hide bomb after explosion
-            resetBomb(bomb);
-        }, 600);  // Duration matches the CSS explosion animation (0.6s)
+        }, 600);  // Duration of explosion animation
     }
 
     function handleBombCollision(bomb) {
@@ -153,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function resetGame() {
         score = 0;
-        lives = 3;
+        lives = 9;  // Start game with 9 lives
         currentQuestionIndex = 0;
         scoreEl.textContent = score;
         gameActive = true;

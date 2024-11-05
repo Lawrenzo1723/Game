@@ -1,171 +1,138 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    const questionEl = document.getElementById("question");
-    const optionsContainer = document.getElementById("options");
-    const bombs = {
-        A: document.getElementById("bombA"),
-        B: document.getElementById("bombB"),
-        C: document.getElementById("bombC"),
-        D: document.getElementById("bombD"),
-    };
-    const catImage = document.getElementById("catImage");
-    const scoreEl = document.getElementById("score");
-    const livesContainer = document.getElementById("lives-container");
-    const playButton = document.getElementById("play-button");
-    const explosionAnimation = document.getElementById("explosion-animation");
-    const gameContainer = document.getElementById("game-container");
+/* Basic page layout */
+body, html {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    background-color: #f0f0f0;
+}
 
-    const sounds = {
-        explosion: document.getElementById("explosionSound"),
-        correct: document.getElementById("correctAnswerSound"),
-        music: document.getElementById("gameMusic")
-    };
+.game-container {
+    position: relative;
+    width: 90vw;
+    height: 90vh;
+    background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Background_.jpg');
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
-    let gameSpeed = 5000;
-    let questions = [];
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let lives = 9;
-    let gameActive = false;
-    let lifeDeductedThisRound = false;
+#score-lives {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 20px;
+}
 
-    async function fetchQuestions() {
-        try {
-            const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/question%20in%20Json.json');
-            questions = await response.json();
-        } catch (error) {
-            console.error("Error loading questions:", error);
-        }
+#lives-container {
+    display: flex;
+    gap: 5px;
+}
+
+#lives-container img {
+    width: 25px;
+    height: 25px;
+}
+
+#question-container {
+    position: absolute;
+    top: 5%;
+    text-align: center;
+    width: 80%;
+}
+
+#options {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Cat image styling */
+.cat {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+}
+
+#catImage {
+    width: 100%;
+    height: 100%;
+}
+
+/* Bomb styling and positioning */
+.bomb {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+/* Position each bomb at a screen corner */
+#bombA { top: 0; left: 0; }
+#bombB { top: 0; right: 0; }
+#bombC { bottom: 0; left: 0; }
+#bombD { bottom: 0; right: 0; }
+
+/* Keyframe animation to move bombs to the center */
+@keyframes moveToCenter {
+    from {
+        transform: translate(0, 0);
     }
-
-    function loadQuestion() {
-        if (questions.length === 0) return;
-        const questionData = questions[currentQuestionIndex];
-        questionEl.textContent = questionData["Question"];
-
-        optionsContainer.innerHTML = '';
-        ['A', 'B', 'C', 'D'].forEach(option => {
-            const optionText = document.createElement('p');
-            optionText.textContent = `${option}: ${questionData[`Option ${option}`]}`;
-            optionsContainer.appendChild(optionText);
-        });
-
-        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
-        lifeDeductedThisRound = false;
-        startBombs(); // Start bombs moving toward the cat for the new question
+    to {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
+}
 
-    function updateLives() {
-        livesContainer.innerHTML = '';
-        for (let i = 0; i < lives; i++) {
-            const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/images/Cat_life.png";
-            livesContainer.appendChild(lifeIcon);
-        }
-    }
+#bombA, #bombB, #bombC, #bombD {
+    animation: moveToCenter 5s linear forwards;
+}
 
-    function triggerExplosion() {
-        gameContainer.classList.add("shake");
+/* Explosion animation styling */
+#explosion-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    display: none;
+}
 
-        let frame = 1;
-        explosionAnimation.style.display = "block";
-        const explosionInterval = setInterval(() => {
-            explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/explosions/Explosion${frame}.png)`;
-            frame++;
-            if (frame > 6) {
-                clearInterval(explosionInterval);
-                explosionAnimation.style.display = "none";
-                gameContainer.classList.remove("shake");
-                checkGameStatus();
-            }
-        }, 100);
-    }
+/* Shake effect when a bomb collides with the cat */
+@keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 5px); }
+    40% { transform: translate(5px, -5px); }
+    60% { transform: translate(-5px, -5px); }
+    80% { transform: translate(5px, 5px); }
+}
 
-    function handleBombCollision() {
-        if (!gameActive || lifeDeductedThisRound) return;
+.shake {
+    animation: shake 0.5s;
+}
 
-        lives--;
-        updateLives();
-        lifeDeductedThisRound = true;
-        triggerExplosion();
-        sounds.explosion.play();
+/* Play button styling */
+#play-button {
+    position: absolute;
+    bottom: 20px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-        if (lives > 0) {
-            setTimeout(() => {
-                resetBombs();
-                loadQuestion();
-            }, 500);
-        }
-    }
-
-    function checkGameStatus() {
-        if (lives <= 0) {
-            gameOver();
-        } else {
-            loadQuestion();
-        }
-    }
-
-    function gameOver() {
-        gameActive = false;
-        sounds.music.pause();
-        alert("Game Over! Your score: " + score);
-        showRetryButton();
-    }
-
-    function showRetryButton() {
-        playButton.textContent = "Retry";
-        playButton.style.display = "block";
-        playButton.removeEventListener("click", startGame); // Remove any previous event listeners
-        playButton.addEventListener("click", resetGame); // Add reset event listener
-    }
-
-    function resetGame() {
-        // Reset all game state variables
-        score = 0;
-        lives = 9;
-        currentQuestionIndex = 0;
-        scoreEl.textContent = score;
-        gameActive = true;
-        lifeDeductedThisRound = false;
-
-        updateLives();
-        resetBombs(); // Reset bomb animations
-        loadQuestion();
-
-        // Hide the retry button and restart the music
-        playButton.style.display = "none";
-        sounds.music.currentTime = 0;
-        sounds.music.play();
-    }
-
-    function resetBombs() {
-        Object.values(bombs).forEach(bomb => {
-            bomb.style.animation = 'none';
-            void bomb.offsetWidth; // Trigger reflow to reset animation
-            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
-        });
-    }
-
-    function startBombs() {
-        Object.values(bombs).forEach(bomb => {
-            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
-        });
-    }
-
-    function monitorBombs() {
-        Object.values(bombs).forEach(bomb => {
-            bomb.addEventListener("animationend", handleBombCollision);
-        });
-    }
-
-    function startGame() {
-        fetchQuestions();
-        resetGame();
-        monitorBombs();
-    }
-
-    playButton.addEventListener("click", startGame);
-
-    sounds.music.volume = 0.5;
-    sounds.music.play();
-});
+#play-button:hover {
+    background-color: #45a049;
+}

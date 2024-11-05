@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function fetchQuestions() {
         try {
             console.log("Fetching questions...");
-            const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/questions.json');
+            const response = await fetch('https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/question%20in%20Json.json');
             
             if (!response.ok) {
                 throw new Error(`Failed to fetch questions: ${response.status} ${response.statusText}`);
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         livesContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
             const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
+            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
         console.log("Lives updated:", lives);
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let frame = 1;
         explosionAnimation.style.display = "block";
         const explosionInterval = setInterval(() => {
-            explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/explosions/Explosion${frame}.png)`;
+            explosionAnimation.style.backgroundImage = `url(https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/explosions/Explosion${frame}.png)`;
             frame++;
             if (frame > 6) {
                 clearInterval(explosionInterval);

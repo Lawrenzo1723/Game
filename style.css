@@ -100,6 +100,20 @@ body, html {
     display: none;
 }
 
+/* Explosion keyframe animation */
+@keyframes explosionAnimation {
+    0% { background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion1.png'); }
+    20% { background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion2.png'); }
+    40% { background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion3.png'); }
+    60% { background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion4.png'); }
+    80% { background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion5.png'); }
+    100% { background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion6.png'); }
+}
+
+.exploding {
+    animation: explosionAnimation 0.6s steps(6) forwards;
+}
+
 /* Shake effect for collision */
 @keyframes shake {
     0%, 100% { transform: translate(0, 0); }

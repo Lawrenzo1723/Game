@@ -51,9 +51,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
             optionsContainer.appendChild(optionText);
 
-            resetBomb(bombs[option]);
+            resetBomb(bombs[option]); // Reset each bomb for the new question
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-
             bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
         });
 
@@ -79,9 +78,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Explosion triggered on bomb:", bomb);
         playExplosionSound();
         
-        bomb.style.pointerEvents = "none";
-        bomb.style.visibility = "hidden"; // Hide bomb during explosion animation
-        
+        bomb.style.pointerEvents = "none"; // Disable bomb clicks during animation
+        bomb.style.visibility = "hidden"; // Hide bomb after explosion
+
         // Explosion animation sequence
         let frame = 1;
         explosionAnimation.style.display = "block"; 
@@ -96,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else {
                 clearInterval(explosionInterval);
                 explosionAnimation.style.display = "none"; 
-                bomb.style.visibility = "visible"; // Make bomb visible again for next round
             }
         }, 100); // Switch frames every 100ms
     }

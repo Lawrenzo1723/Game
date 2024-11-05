@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log("Game is loading...");
-
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -28,48 +26,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     let score = 0;
     let lives = 9;
     let gameActive = false;
-    let lifeDeductedThisRound = false;
 
     async function fetchQuestions() {
         try {
-            console.log("Fetching questions...");
             const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/refs/heads/main/question%20in%20Json.json');
-            if (!response.ok) {
-                throw new Error(`Failed to fetch questions: ${response.status} ${response.statusText}`);
-            }
             questions = await response.json();
-            console.log("Questions loaded successfully:", questions);
         } catch (error) {
             console.error("Error loading questions:", error);
-            questions = [
-                {
-                    "Question": "Sample Question 1",
-                    "Option A": "Answer A",
-                    "Option B": "Answer B",
-                    "Option C": "Answer C",
-                    "Option D": "Answer D",
-                    "Correct Answer": "A",
-                    "Explanation": "Explanation for answer A"
-                }
-            ];
         }
     }
 
     function loadQuestion() {
-        if (questions.length === 0) {
-            console.warn("No questions available to load.");
-            return;
-        }
+        if (questions.length === 0) return;
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
+
+        // Display options and set up click handlers
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
-            bombs[option].style.display = 'block';
-            bombs[option].addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
+            const optionText = document.createElement('p');
+            optionText.textContent = `${option}: ${questionData[`Option ${option}`]}`;
+            optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
+            optionsContainer.appendChild(optionText);
+
+            // Reset bomb for each option at its starting position
+            resetBomb(bombs[option]);
+            bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
+
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
-        lifeDeductedThisRound = false;
-        startBombs();
     }
 
     function updateLives() {
@@ -79,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
-        console.log("Lives updated:", lives);
     }
 
     function triggerExplosion(bomb) {
@@ -88,23 +72,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         explosionAnimation.style.display = "block";
         sounds.explosion.play();
 
-        // Briefly display the explosion animation
         setTimeout(() => {
             explosionAnimation.style.display = "none";
             gameContainer.classList.remove("shake");
         }, 500);
     }
 
-    function handleBombCollision() {
-        if (!gameActive || lifeDeductedThisRound) return;
+    function handleBombCollision(bomb) {
+        if (!gameActive) return;
         lives--;
         updateLives();
-        lifeDeductedThisRound = true;
-        triggerExplosion(); // Show explosion at cat's position
+        triggerExplosion(bomb);
         checkGameStatus();
     }
 
     function handleAnswerSelection(selectedOption, correctOption) {
+        const selectedBomb = bombs[selectedOption];
         if (selectedOption === correctOption) {
             console.log("Correct answer selected.");
             sounds.correct.play();
@@ -114,15 +97,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadQuestion();
         } else {
             console.log("Incorrect answer selected.");
-            triggerExplosion(bombs[selectedOption]); // Trigger explosion on clicked bomb
+            triggerExplosion(selectedBomb); // Only triggers explosion, no life deduction
         }
     }
 
     function checkGameStatus() {
         if (lives <= 0) {
             gameOver();
-        } else {
-            loadQuestion();
         }
     }
 
@@ -130,7 +111,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         gameActive = false;
         sounds.music.pause();
         alert("Game Over! Your score: " + score);
-        console.log("Game Over. Final score:", score);
         showRetryButton();
     }
 
@@ -147,34 +127,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentQuestionIndex = 0;
         scoreEl.textContent = score;
         gameActive = true;
-        lifeDeductedThisRound = false;
+
         updateLives();
         resetBombs();
         loadQuestion();
+
         playButton.style.display = "none";
         sounds.music.currentTime = 0;
         sounds.music.play();
     }
 
     function resetBombs() {
-        Object.values(bombs).forEach(bomb => {
-            bomb.style.display = 'none';
-            bomb.style.animation = 'none';
-        });
+        Object.values(bombs).forEach(resetBomb);
+    }
+
+    function resetBomb(bomb) {
+        bomb.style.animation = 'none';
+        bomb.style.display = 'block';
+        void bomb.offsetWidth; // Trigger reflow
     }
 
     function startBombs() {
-        Object.keys(bombs).forEach((key, index) => {
+        Object.keys(bombs).forEach((key) => {
             const bomb = bombs[key];
-            bomb.style.display = 'block';
-            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-            bomb.addEventListener("animationend", handleBombCollision);
+            bomb.addEventListener("animationend", () => handleBombCollision(bomb));
         });
     }
 
     function startGame() {
         fetchQuestions().then(() => {
             resetGame();
+            startBombs();
         });
     }
 

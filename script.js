@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function fetchQuestions() {
         try {
             console.log("Fetching questions...");
-            const response = await fetch('https://github.com/Lawrenzo1723/Game/blob/888bdddca5aa01fa320dfef08a0b3b2e4aa9de74/question%20in%20Json.json');
+            const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/refs/heads/main/question%20in%20Json.json');
             
             if (!response.ok) {
                 throw new Error(`Failed to fetch questions: ${response.status} ${response.statusText}`);

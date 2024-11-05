@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         livesContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
             const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
+            lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
         console.log("Lives updated:", lives);

@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 12000; // Slower speed for uniform bomb movement (12 seconds)
+    let gameSpeed = 12000; // Slow speed for consistent movement (12 seconds)
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;

@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 12000; // Slow speed for consistent movement (12 seconds)
+    let gameSpeed = 12000; // Slower speed for consistent movement (12 seconds)
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -66,24 +66,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function triggerExplosion(bomb) {
-        bomb.style.display = "none"; // Hide the bomb after explosion
-        explosionAnimation.style.display = "block";
-        explosionAnimation.style.top = bomb.offsetTop + 'px';
-        explosionAnimation.style.left = bomb.offsetLeft + 'px';
-        sounds.explosion.play();
-
-        setTimeout(() => {
-            explosionAnimation.style.display = "none";
-        }, 500);
-    }
-
     function handleBombCollision(bomb) {
         if (!gameActive || lifeDeductedThisRound) return;
         lives--;
         lifeDeductedThisRound = true; // Only deduct life once per question
         updateLives();
-        triggerExplosion(bomb);
         checkGameStatus();
     }
 
@@ -96,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             resetBombs();
             loadQuestion();
         } else {
-            triggerExplosion(selectedBomb); // Trigger explosion on incorrect bomb without losing life
+            selectedBomb.style.display = "none"; // Hide wrong bomb when clicked
         }
     }
 
@@ -137,13 +124,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function resetBombs() {
-        Object.values(bombs).forEach(resetBomb);
-    }
-
-    function resetBomb(bomb) {
-        bomb.style.animation = 'none';
-        bomb.style.display = 'block';
-        void bomb.offsetWidth; // Trigger reflow to reset animation
+        Object.values(bombs).forEach(bomb => {
+            bomb.style.animation = 'none';
+            bomb.style.display = 'block';
+            void bomb.offsetWidth; // Trigger reflow to reset animation
+            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`; // Reapply animation for the next question
+        });
     }
 
     function startBombs() {

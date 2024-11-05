@@ -11,7 +11,7 @@ body, html {
     position: relative;
     width: 90vw;
     height: 90vh;
-    background-image: url('https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Background.jpeg');
+    background-image: url('https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Background_.jpg');
     background-size: cover;
     display: flex;
     justify-content: center;

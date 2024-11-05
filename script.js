@@ -12,9 +12,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const scoreEl = document.getElementById("score");
     const livesContainer = document.getElementById("lives-container");
     const playButton = document.getElementById("play-button");
+    const explosionAnimation = document.getElementById("explosion-animation");
 
     const sounds = {
-        explosion: document.getElementById("explosionSound"),
+        explosion: "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/sounds/Sound_Explosion.wav",
         correct: document.getElementById("correctAnswerSound"),
         music: document.getElementById("gameMusic")
     };
@@ -70,17 +71,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Lives updated:", lives);
     }
 
+    function playExplosionSound() {
+        const explosionSound = new Audio(sounds.explosion);
+        explosionSound.play();
+    }
+
     function triggerExplosion(bomb) {
         console.log("Explosion triggered on bomb:", bomb);
-        bomb.classList.add("exploding");  // Apply explosion animation
-        bomb.style.pointerEvents = "none"; // Disable clicking while exploding
-        sounds.explosion.play();
-
-        // Keep the bomb hidden until the next question
-        setTimeout(() => {
-            bomb.classList.remove("exploding");
-            bomb.style.display = "none";  // Hide bomb after explosion
-        }, 600);  // Duration of explosion animation
+        playExplosionSound();
+        
+        bomb.style.pointerEvents = "none";
+        bomb.classList.add("exploding"); // Add explosion animation
+        
+        // Explosion animation sequence
+        let frame = 1;
+        const explosionInterval = setInterval(() => {
+            if (frame <= 6) {
+                explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/Game/blob/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion${frame}.png)`;
+                frame++;
+            } else {
+                clearInterval(explosionInterval);
+                bomb.classList.remove("exploding");
+                bomb.style.display = "none";  // Hide bomb after explosion
+            }
+        }, 100);  // Switch frames every 100ms
     }
 
     function handleBombCollision(bomb) {

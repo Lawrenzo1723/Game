@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log("Game initialized"); // Diagnostic start message
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -39,10 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function loadQuestion() {
-        if (questions.length === 0) {
-            console.warn("No questions loaded"); 
-            return;
-        }
+        if (questions.length === 0) return;
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
         console.log("Displaying question:", questionData["Question"]);
@@ -111,6 +107,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     function checkGameStatus() {
         if (lives <= 0) {
             gameOver();
+        } else if (lifeDeductedThisRound) {
+            // Proceed to the next question after a life is deducted due to a collision
+            resetBombs();
+            loadQuestion();
         }
     }
 

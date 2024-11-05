@@ -20,12 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 5000;
+    let gameSpeed = 10000; // Set slow, uniform speed for all bombs (10 seconds)
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
     let lives = 9;
     let gameActive = false;
+    let lifeDeductedThisRound = false;
 
     async function fetchQuestions() {
         try {
@@ -41,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
 
-        // Display options and set up click handlers
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
@@ -49,12 +49,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
             optionsContainer.appendChild(optionText);
 
-            // Reset bomb for each option at its starting position
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
 
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        lifeDeductedThisRound = false;
     }
 
     function updateLives() {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function triggerExplosion(bomb) {
-        bomb.style.display = "none"; // Hide the bomb after it explodes
+        bomb.style.display = "none"; 
         gameContainer.classList.add("shake");
         explosionAnimation.style.display = "block";
         sounds.explosion.play();
@@ -79,8 +79,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function handleBombCollision(bomb) {
-        if (!gameActive) return;
+        if (!gameActive || lifeDeductedThisRound) return;
         lives--;
+        lifeDeductedThisRound = true; // Prevents multiple life deductions per round
         updateLives();
         triggerExplosion(bomb);
         checkGameStatus();
@@ -89,15 +90,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     function handleAnswerSelection(selectedOption, correctOption) {
         const selectedBomb = bombs[selectedOption];
         if (selectedOption === correctOption) {
-            console.log("Correct answer selected.");
             sounds.correct.play();
             score++;
             scoreEl.textContent = score;
             resetBombs();
             loadQuestion();
         } else {
-            console.log("Incorrect answer selected.");
-            triggerExplosion(selectedBomb); // Only triggers explosion, no life deduction
+            triggerExplosion(selectedBomb);
         }
     }
 
@@ -144,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function resetBomb(bomb) {
         bomb.style.animation = 'none';
         bomb.style.display = 'block';
-        void bomb.offsetWidth; // Trigger reflow
+        void bomb.offsetWidth; // Trigger reflow to reset animation
     }
 
     function startBombs() {

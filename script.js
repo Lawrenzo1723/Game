@@ -1,6 +1,21 @@
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("Game initialized");
 
+    const explosionFrames = [
+        "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion1.png",
+        "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion2.png",
+        "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion3.png",
+        "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion4.png",
+        "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion5.png",
+        "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
+    ];
+
+    // Preload explosion images
+    explosionFrames.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -12,15 +27,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const scoreEl = document.getElementById("score");
     const livesContainer = document.getElementById("lives-container");
     const playButton = document.getElementById("play-button");
-    const explosionAnimation = document.getElementById("explosion-animation");
 
     const sounds = {
-        explosion: "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/54fd000e59e19a1bbdc9063159b55d3a837991bc/game/assets/sounds/Sound_Explosion.wav",
+        explosion: document.getElementById("explosionSound"),
         correct: document.getElementById("correctAnswerSound"),
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 30000; // 30 seconds for bombs to reach the cat
+    let gameSpeed = 30000;  // 30 seconds for bombs to reach the cat
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -51,12 +65,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
             optionsContainer.appendChild(optionText);
 
-            resetBomb(bombs[option]); // Reset each bomb for the new question
+            resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
             bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
         });
 
         lifeDeductedThisRound = false;
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
     function updateLives() {
@@ -69,34 +84,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Lives updated:", lives);
     }
 
-    function playExplosionSound() {
-        const explosionSound = new Audio(sounds.explosion);
-        explosionSound.play();
-    }
-
     function triggerExplosion(bomb) {
-        console.log("Explosion triggered on bomb:", bomb);
-        playExplosionSound();
-        
-        bomb.style.pointerEvents = "none"; // Disable bomb clicks during animation
-        bomb.style.visibility = "hidden"; // Hide bomb after explosion
-
-        // Explosion animation sequence
-        let frame = 1;
-        explosionAnimation.style.display = "block"; 
-        explosionAnimation.style.position = "absolute"; 
-        explosionAnimation.style.left = `${bomb.offsetLeft}px`; 
-        explosionAnimation.style.top = `${bomb.offsetTop}px`; 
+        let frame = 0;
+        bomb.style.animation = "";  // Reset any existing animations
+        bomb.src = explosionFrames[frame];  // Start with the first explosion frame
+        bomb.style.width = "150px";  // Resize for explosion if necessary
 
         const explosionInterval = setInterval(() => {
-            if (frame <= 6) {
-                explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/Game/blob/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion${frame}.png)`;
-                frame++;
+            frame++;
+            if (frame < explosionFrames.length) {
+                bomb.src = explosionFrames[frame];
             } else {
                 clearInterval(explosionInterval);
-                explosionAnimation.style.display = "none"; 
+                bomb.style.display = "none";  // Hide the bomb after the explosion
             }
-        }, 100); // Switch frames every 100ms
+        }, 100);  // Speed of the explosion animation
     }
 
     function handleBombCollision(bomb) {
@@ -167,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function resetGame() {
         score = 0;
-        lives = 9;  // Start game with 9 lives
+        lives = 9;
         currentQuestionIndex = 0;
         scoreEl.textContent = score;
         gameActive = true;

@@ -181,6 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         Object.values(bombs).forEach(bomb => {
             bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
+        console.log("Bombs started moving towards the cat.");
     }
 
     function monitorBombs() {

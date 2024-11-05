@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const livesContainer = document.getElementById("lives-container");
     const playButton = document.getElementById("play-button");
     const explosionAnimation = document.getElementById("explosion-animation");
-    const gameContainer = document.getElementById("game-container");
 
     const sounds = {
         explosion: document.getElementById("explosionSound"),
@@ -20,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 12000; // Slower speed for consistent movement (12 seconds)
+    let gameSpeed = 12000;
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -66,10 +65,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    function triggerExplosion(bomb) {
+        // Hide the bomb and play explosion animation
+        bomb.style.display = "none";
+        explosionAnimation.style.display = "block";
+        explosionAnimation.style.top = bomb.offsetTop + 'px';
+        explosionAnimation.style.left = bomb.offsetLeft + 'px';
+        sounds.explosion.play();
+
+        setTimeout(() => {
+            explosionAnimation.style.display = "none";
+        }, 500);
+    }
+
     function handleBombCollision(bomb) {
+        // Only deduct a life if the bomb collides with the cat and life has not been deducted
         if (!gameActive || lifeDeductedThisRound) return;
         lives--;
-        lifeDeductedThisRound = true; // Only deduct life once per question
+        lifeDeductedThisRound = true;
         updateLives();
         checkGameStatus();
     }
@@ -83,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             resetBombs();
             loadQuestion();
         } else {
-            selectedBomb.style.display = "none"; // Hide wrong bomb when clicked
+            triggerExplosion(selectedBomb); // Explode the wrong bomb without life deduction
         }
     }
 

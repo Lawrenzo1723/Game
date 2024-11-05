@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log("Game is loading..."); // Initial log to indicate the script is loaded
-    
+    console.log("Game is loading...");
+
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -34,11 +34,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             console.log("Fetching questions...");
             const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/refs/heads/main/question%20in%20Json.json');
-            
             if (!response.ok) {
                 throw new Error(`Failed to fetch questions: ${response.status} ${response.statusText}`);
             }
-            
             questions = await response.json();
             console.log("Questions loaded successfully:", questions);
         } catch (error) {
@@ -62,18 +60,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.warn("No questions available to load.");
             return;
         }
-
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
-        console.log("Loading question:", questionData);
-
         optionsContainer.innerHTML = '';
         ['A', 'B', 'C', 'D'].forEach(option => {
             const optionText = document.createElement('p');
             optionText.textContent = `${option}: ${questionData[`Option ${option}`]}`;
+            optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
             optionsContainer.appendChild(optionText);
         });
-
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
         lifeDeductedThisRound = false;
         startBombs();
@@ -90,9 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function triggerExplosion() {
-        console.log("Explosion triggered");
         gameContainer.classList.add("shake");
-
         let frame = 1;
         explosionAnimation.style.display = "block";
         const explosionInterval = setInterval(() => {
@@ -109,13 +102,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function handleBombCollision() {
         if (!gameActive || lifeDeductedThisRound) return;
-
         lives--;
         updateLives();
         lifeDeductedThisRound = true;
         triggerExplosion();
         sounds.explosion.play();
-
         console.log("Bomb collided with cat. Lives left:", lives);
 
         if (lives > 0) {
@@ -123,6 +114,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 resetBombs();
                 loadQuestion();
             }, 500);
+        }
+    }
+
+    function handleAnswerSelection(selectedOption, correctOption) {
+        if (selectedOption === correctOption) {
+            console.log("Correct answer selected.");
+            sounds.correct.play();
+            score++;
+            scoreEl.textContent = score;
+            resetBombs();
+            loadQuestion();
+        } else {
+            console.log("Incorrect answer selected.");
+            handleBombCollision();
         }
     }
 
@@ -156,42 +161,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         scoreEl.textContent = score;
         gameActive = true;
         lifeDeductedThisRound = false;
-
         updateLives();
         resetBombs();
         loadQuestion();
-
         playButton.style.display = "none";
         sounds.music.currentTime = 0;
         sounds.music.play();
-        console.log("Game reset. Score:", score, "Lives:", lives);
     }
 
     function resetBombs() {
         Object.values(bombs).forEach(bomb => {
             bomb.style.animation = 'none';
-            void bomb.offsetWidth;
-            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
+            void bomb.offsetWidth; // Trigger reflow to reset animation
+            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
-        console.log("Bombs reset.");
     }
 
     function startBombs() {
         Object.values(bombs).forEach(bomb => {
-            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear`;
+            bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
-        console.log("Bombs started moving towards the cat.");
     }
 
     function monitorBombs() {
         Object.values(bombs).forEach(bomb => {
             bomb.addEventListener("animationend", handleBombCollision);
         });
-        console.log("Bomb collision monitoring activated.");
     }
 
     function startGame() {
-        console.log("Starting game...");
         fetchQuestions().then(() => {
             resetGame();
             monitorBombs();
@@ -199,7 +197,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     playButton.addEventListener("click", startGame);
-
     sounds.music.volume = 0.5;
-    console.log("Background music volume set to 0.5");
 });

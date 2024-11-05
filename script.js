@@ -81,18 +81,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         playExplosionSound();
         
         bomb.style.pointerEvents = "none";
-        bomb.classList.add("exploding"); // Add explosion animation
         
         // Explosion animation sequence
         let frame = 1;
+        bomb.style.display = "none";
+        explosionAnimation.style.display = "block"; // Display explosion animation over the bomb's position
         const explosionInterval = setInterval(() => {
             if (frame <= 6) {
                 explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/Game/blob/a940f7e1f4b5a44cb291d6d92de892d02f555ba8/game/assets/explosions/Explosion${frame}.png)`;
                 frame++;
             } else {
                 clearInterval(explosionInterval);
+                explosionAnimation.style.display = "none";  // Hide explosion after finishing
                 bomb.classList.remove("exploding");
-                bomb.style.display = "none";  // Hide bomb after explosion
             }
         }, 100);  // Switch frames every 100ms
     }

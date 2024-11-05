@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let score = 0;
     let lives = 3;
     let gameActive = false;
-    let lifeDeductedThisRound = false; // Flag to control life deduction per question round
+    let lifeDeductedThisRound = false;
 
     async function fetchQuestions() {
         try {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         });
 
-        lifeDeductedThisRound = false; // Reset life deduction flag for new question round
+        lifeDeductedThisRound = false; // Reset flag for each question
         currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
@@ -69,16 +69,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         console.log("Explosion triggered on bomb:", bomb);
-        bomb.style.display = "none"; // Hide the bomb after explosion
+        bomb.style.display = "none";
         sounds.explosion.play();
     }
 
     function handleBombCollision(bomb) {
-        if (lifeDeductedThisRound) return; // Ensure only one life deduction per question round
-
-        // Deduct a life if a bomb reaches the center (cat's position)
+        if (lifeDeductedThisRound) {
+            console.log("Life already deducted for this round; no further deductions.");
+            return;
+        }
+        
         lives--;
-        lifeDeductedThisRound = true; // Mark life deduction for this round
+        lifeDeductedThisRound = true; // Mark this round as having a life deduction
         console.log("Life lost due to bomb collision. Remaining lives:", lives);
         updateLives();
         checkGameStatus();
@@ -90,10 +92,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             sounds.correct.play();
             score++;
             scoreEl.textContent = score;
-            console.log("Correct answer. Score updated:", score);
+            console.log("Correct answer selected. Score updated:", score);
             loadNextQuestion();
         } else {
-            console.log("Incorrect answer, bomb explodes.");
+            console.log("Incorrect answer; triggering explosion on bomb.");
             triggerExplosion(selectedBomb);
         }
     }
@@ -122,24 +124,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         bomb.style.display = 'block';
         bomb.style.animation = 'none';
         void bomb.offsetWidth; // Trigger reflow to reset animation
-        bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`; // Restart animation
+        bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
+        bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true }); // Listen once per animation end
     }
 
     function resetBombs() {
         Object.values(bombs).forEach(bomb => resetBomb(bomb));
     }
 
-    function startBombs() {
-        Object.keys(bombs).forEach(key => {
-            const bomb = bombs[key];
-            bomb.addEventListener("animationend", () => handleBombCollision(bomb));
-        });
-    }
-
     function startGame() {
         fetchQuestions().then(() => {
             resetGame();
-            startBombs();
+            Object.values(bombs).forEach(bomb => bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true }));
         });
     }
 

@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 10000; // Set slow, uniform speed for all bombs (10 seconds)
+    let gameSpeed = 12000; // Slow down bomb speed by an additional 20%
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -67,21 +67,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function triggerExplosion(bomb) {
-        bomb.style.display = "none"; 
-        gameContainer.classList.add("shake");
+        bomb.style.display = "none"; // Hide the bomb after explosion
         explosionAnimation.style.display = "block";
+        explosionAnimation.style.top = bomb.offsetTop + 'px';
+        explosionAnimation.style.left = bomb.offsetLeft + 'px';
         sounds.explosion.play();
 
         setTimeout(() => {
             explosionAnimation.style.display = "none";
-            gameContainer.classList.remove("shake");
         }, 500);
     }
 
     function handleBombCollision(bomb) {
         if (!gameActive || lifeDeductedThisRound) return;
         lives--;
-        lifeDeductedThisRound = true; // Prevents multiple life deductions per round
+        lifeDeductedThisRound = true; // Only deduct life once per question
         updateLives();
         triggerExplosion(bomb);
         checkGameStatus();
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             resetBombs();
             loadQuestion();
         } else {
-            triggerExplosion(selectedBomb);
+            triggerExplosion(selectedBomb); // Trigger explosion on incorrect bomb without losing life
         }
     }
 

@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchQuestions() {
         try {
-            const response = await fetch('https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/question%20in%20Json.json');
+            const response = await fetch('https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/questions.json');
             questions = await response.json();
         } catch (error) {
             console.error("Error loading questions:", error);
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         livesContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
             const lifeIcon = document.createElement('img');
-            lifeIcon.src = "https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
+            lifeIcon.src = "https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/images/Cat_life.png";
             livesContainer.appendChild(lifeIcon);
         }
     }
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let frame = 1;
         explosionAnimation.style.display = "block";
         const explosionInterval = setInterval(() => {
-            explosionAnimation.style.backgroundImage = `url(https://github.com/Lawrenzo1723/Game/blob/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/explosions/Explosion${frame}.png)`;
+            explosionAnimation.style.backgroundImage = `url(https://raw.githubusercontent.com/Lawrenzo1723/Game/56e7a26f1eaad69f937734143a85e3a8180aaa26/game/assets/explosions/Explosion${frame}.png)`;
             frame++;
             if (frame > 6) {
                 clearInterval(explosionInterval);

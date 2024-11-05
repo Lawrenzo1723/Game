@@ -73,8 +73,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         console.log("Explosion triggered on bomb:", bomb);
-        bomb.style.display = "none";
+        bomb.classList.add("exploding");  // Apply explosion animation
+        bomb.style.pointerEvents = "none"; // Disable clicking while exploding
         sounds.explosion.play();
+
+        // Remove explosion effect after animation ends
+        setTimeout(() => {
+            bomb.classList.remove("exploding");
+            bomb.style.display = "none";  // Hide bomb after explosion
+            resetBomb(bomb);
+        }, 600);  // Duration matches the CSS explosion animation (0.6s)
     }
 
     function handleBombCollision(bomb) {

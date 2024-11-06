@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             Object.values(bombs).forEach(bomb => bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true }));
         });
     }
-    
+
     function resetGame() {
         score = 0;
         lives = 9;

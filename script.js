@@ -10,11 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
-    explosionFrames.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -70,7 +65,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         lifeDeductedThisRound = false;
-        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
     function updateLives() {

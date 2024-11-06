@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
+    // Preload explosion images
     explosionFrames.forEach(src => {
         const img = new Image();
         img.src = src;
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 30000;
+    let gameSpeed = 30000;  // 30 seconds for bombs to reach the cat
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -56,18 +57,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
         console.log("Loaded question:", questionData["Question"]);
+
+        const correctAnswerText = questionData["Correct Answer"].trim().toLowerCase();
         console.log("Correct answer for this question:", questionData["Correct Answer"]);
 
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
             optionText.textContent = `${option}: ${questionData[`Option ${option}`] || ''}`;
-            optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
+            optionText.addEventListener("click", () => handleAnswerSelection(option, correctAnswerText));
             optionsContainer.appendChild(optionText);
 
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-            bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
+            bombs[option].onclick = () => handleAnswerSelection(option, correctAnswerText);
         });
 
         lifeDeductedThisRound = false;
@@ -86,9 +89,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         let frame = 0;
-        bomb.style.animation = "";
-        bomb.src = explosionFrames[frame];
-        bomb.style.width = "150px";
+        bomb.style.animation = "";  // Reset any existing animations
+        bomb.src = explosionFrames[frame];  // Start with the first explosion frame
+        bomb.style.width = "150px";  // Resize for explosion if necessary
 
         const explosionInterval = setInterval(() => {
             frame++;
@@ -96,9 +99,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 bomb.src = explosionFrames[frame];
             } else {
                 clearInterval(explosionInterval);
-                bomb.style.display = "none";
+                bomb.style.display = "none";  // Hide the bomb after the explosion
             }
-        }, 100);
+        }, 100);  // Speed of the explosion animation
     }
 
     function handleBombCollision(bomb) {
@@ -116,12 +119,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function handleAnswerSelection(selectedOption, correctAnswerText) {
         const selectedBomb = bombs[selectedOption];
-        const selectedAnswerText = questions[currentQuestionIndex][`Option ${selectedOption}`];
+        const selectedAnswerText = document.querySelector(`#options p:nth-child(${selectedOption.charCodeAt(0) - 64})`).textContent.split(': ')[1].trim().toLowerCase();
 
         console.log("Selected answer text:", selectedAnswerText);
         console.log("Expected correct answer text:", correctAnswerText);
 
-        if (selectedAnswerText.trim() === correctAnswerText.trim()) {
+        if (selectedAnswerText === correctAnswerText) {
             sounds.correct.play();
             score++;
             scoreEl.textContent = score;
@@ -156,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function resetBomb(bomb) {
         bomb.style.display = 'block';
         bomb.style.animation = 'none';
-        void bomb.offsetWidth;
+        void bomb.offsetWidth; // Trigger reflow to reset animation
         bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true });
     }

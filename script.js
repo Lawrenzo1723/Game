@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
-    // Preload explosion images
     explosionFrames.forEach(src => {
         const img = new Image();
         img.src = src;
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 30000;  // 30 seconds for bombs to reach the cat
+    let gameSpeed = 30000;
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -86,9 +85,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         let frame = 0;
-        bomb.style.animation = "";  // Reset any existing animations
-        bomb.src = explosionFrames[frame];  // Start with the first explosion frame
-        bomb.style.width = "150px";  // Resize for explosion if necessary
+        bomb.style.animation = "";
+        bomb.src = explosionFrames[frame];
+        bomb.style.width = "150px";
 
         const explosionInterval = setInterval(() => {
             frame++;
@@ -96,9 +95,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 bomb.src = explosionFrames[frame];
             } else {
                 clearInterval(explosionInterval);
-                bomb.style.display = "none";  // Hide the bomb after the explosion
+                bomb.style.display = "none";
             }
-        }, 100);  // Speed of the explosion animation
+        }, 100);
     }
 
     function handleBombCollision(bomb) {
@@ -151,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function resetBomb(bomb) {
         bomb.style.display = 'block';
         bomb.style.animation = 'none';
-        void bomb.offsetWidth; // Trigger reflow to reset animation
+        void bomb.offsetWidth;
         bomb.style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
         bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true });
     }

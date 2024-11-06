@@ -52,19 +52,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         questionEl.textContent = questionData["Question"];
         console.log("Loaded question:", questionData["Question"]);
 
+        const correctAnswer = questionData["Correct Answer"];
+        console.log("Correct answer for this question:", correctAnswer);  // Log the correct answer
+
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
             optionText.textContent = `${option}: ${questionData[`Option ${option}`] || ''}`;
-            optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
+            optionText.addEventListener("click", () => handleAnswerSelection(option, correctAnswer));
             optionsContainer.appendChild(optionText);
 
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-            bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
+            bombs[option].onclick = () => handleAnswerSelection(option, correctAnswer);
         });
 
         lifeDeductedThisRound = false;
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
     function updateLives() {
@@ -108,6 +112,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function handleAnswerSelection(selectedOption, correctOption) {
+        console.log("Selected option:", selectedOption); // Log the selected option
+        console.log("Expected correct option:", correctOption); // Log what should be the correct option
+
         const selectedBomb = bombs[selectedOption];
         if (selectedOption === correctOption) {
             sounds.correct.play();

@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
-    // Preload explosion images
     explosionFrames.forEach(src => {
         const img = new Image();
         img.src = src;

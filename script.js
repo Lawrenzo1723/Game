@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
+    // Preload explosion images
     explosionFrames.forEach(src => {
         const img = new Image();
         img.src = src;
@@ -63,7 +64,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
-            optionText.textContent = `${option}: ${questionData[`Option ${option}`] || ''}`;
+            const answerText = questionData[`Option ${option}`] || '';
+            optionText.textContent = `${option}: ${answerText}`;
             optionText.addEventListener("click", () => handleAnswerSelection(option, correctAnswerText));
             optionsContainer.appendChild(optionText);
 
@@ -73,7 +75,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         lifeDeductedThisRound = false;
-        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
     function updateLives() {
@@ -128,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             score++;
             scoreEl.textContent = score;
             console.log("Correct answer selected. Score updated:", score);
-            lifeDeductedThisRound = false; // Reset life deduction
+            lifeDeductedThisRound = false; 
             loadNextQuestion();
         } else {
             console.log("Incorrect answer selected; triggering explosion on bomb.");

@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 30000;
+    let gameSpeed = 30000;  // 30 seconds for bombs to reach the cat
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (questions.length === 0) return;
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
-        console.log("Question loaded:", questionData["Question"]);
+        console.log("Loaded question:", questionData["Question"]);
 
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
@@ -79,9 +79,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         let frame = 0;
-        bomb.style.animation = "";
-        bomb.src = explosionFrames[frame];
-        bomb.style.width = "150px";
+        bomb.style.animation = "";  // Reset any existing animations
+        bomb.src = explosionFrames[frame];  // Start with the first explosion frame
+        bomb.style.width = "150px";  // Resize for explosion if necessary
 
         const explosionInterval = setInterval(() => {
             frame++;
@@ -89,9 +89,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 bomb.src = explosionFrames[frame];
             } else {
                 clearInterval(explosionInterval);
-                bomb.style.display = "none";
+                bomb.style.display = "none";  // Hide the bomb after the explosion
             }
-        }, 100);
+        }, 100);  // Speed of the explosion animation
     }
 
     function handleBombCollision(bomb) {
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("Correct answer selected. Score updated:", score);
             loadNextQuestion();
         } else {
-            console.log("Incorrect answer; triggering explosion on bomb.");
+            console.log("Incorrect answer selected; triggering explosion on bomb.");
             triggerExplosion(selectedBomb);
         }
     }
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             Object.values(bombs).forEach(bomb => bomb.addEventListener("animationend", () => handleBombCollision(bomb), { once: true }));
         });
     }
-    
+
     function resetGame() {
         score = 0;
         lives = 9;

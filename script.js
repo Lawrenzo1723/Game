@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
+    explosionFrames.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -28,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 30000;  // 30 seconds for bombs to reach the cat
+    let gameSpeed = 30000;
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -51,20 +56,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
         console.log("Loaded question:", questionData["Question"]);
-
-        const correctAnswer = questionData["Correct Answer"];
-        console.log("Correct answer for this question:", correctAnswer);  // Log the correct answer
+        console.log("Correct answer for this question:", questionData["Correct Answer"]);
 
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
             optionText.textContent = `${option}: ${questionData[`Option ${option}`] || ''}`;
-            optionText.addEventListener("click", () => handleAnswerSelection(option, correctAnswer));
+            optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
             optionsContainer.appendChild(optionText);
 
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-            bombs[option].onclick = () => handleAnswerSelection(option, correctAnswer);
+            bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
         });
 
         lifeDeductedThisRound = false;
@@ -83,9 +86,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         let frame = 0;
-        bomb.style.animation = "";  // Reset any existing animations
-        bomb.src = explosionFrames[frame];  // Start with the first explosion frame
-        bomb.style.width = "150px";  // Resize for explosion if necessary
+        bomb.style.animation = "";
+        bomb.src = explosionFrames[frame];
+        bomb.style.width = "150px";
 
         const explosionInterval = setInterval(() => {
             frame++;
@@ -93,9 +96,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 bomb.src = explosionFrames[frame];
             } else {
                 clearInterval(explosionInterval);
-                bomb.style.display = "none";  // Hide the bomb after the explosion
+                bomb.style.display = "none";
             }
-        }, 100);  // Speed of the explosion animation
+        }, 100);
     }
 
     function handleBombCollision(bomb) {
@@ -111,12 +114,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         checkGameStatus();
     }
 
-    function handleAnswerSelection(selectedOption, correctOption) {
-        console.log("Selected option:", selectedOption); // Log the selected option
-        console.log("Expected correct option:", correctOption); // Log what should be the correct option
-
+    function handleAnswerSelection(selectedOption, correctAnswerText) {
         const selectedBomb = bombs[selectedOption];
-        if (selectedOption === correctOption) {
+        const selectedAnswerText = questions[currentQuestionIndex][`Option ${selectedOption}`];
+
+        console.log("Selected answer text:", selectedAnswerText);
+        console.log("Expected correct answer text:", correctAnswerText);
+
+        if (selectedAnswerText.trim() === correctAnswerText.trim()) {
             sounds.correct.play();
             score++;
             scoreEl.textContent = score;

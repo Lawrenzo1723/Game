@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         "https://raw.githubusercontent.com/Lawrenzo1723/CAPM-Quizz/697de47588007abf1f402d1a8af4b5ddf3491d44/game/assets/explosions/Explosion6.png"
     ];
 
+    explosionFrames.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
     const questionEl = document.getElementById("question");
     const optionsContainer = document.getElementById("options");
     const bombs = {
@@ -28,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         music: document.getElementById("gameMusic")
     };
 
-    let gameSpeed = 30000; // 30 seconds for bombs to reach the cat
+    let gameSpeed = 30000;
     let questions = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -51,21 +56,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         const questionData = questions[currentQuestionIndex];
         questionEl.textContent = questionData["Question"];
         console.log("Loaded question:", questionData["Question"]);
-        console.log("Correct answer for this question:", questionData["Correct Answer"]);
+
+        const correctAnswerText = questionData["Correct Answer"].trim().toLowerCase();
+        console.log("Correct answer for this question:", correctAnswerText);
 
         optionsContainer.innerHTML = '';
         Object.keys(bombs).forEach(option => {
             const optionText = document.createElement('p');
             optionText.textContent = `${option}: ${questionData[`Option ${option}`] || ''}`;
-            optionText.addEventListener("click", () => handleAnswerSelection(option, questionData["Correct Answer"]));
+            optionText.addEventListener("click", () => handleAnswerSelection(option, correctAnswerText));
             optionsContainer.appendChild(optionText);
 
             resetBomb(bombs[option]);
             bombs[option].style.animation = `moveToCenter ${gameSpeed / 1000}s linear forwards`;
-            bombs[option].onclick = () => handleAnswerSelection(option, questionData["Correct Answer"]);
+            bombs[option].onclick = () => handleAnswerSelection(option, correctAnswerText);
         });
 
         lifeDeductedThisRound = false;
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
     }
 
     function updateLives() {
@@ -80,9 +88,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function triggerExplosion(bomb) {
         let frame = 0;
-        bomb.style.animation = ""; // Reset animation
+        bomb.style.animation = "";
         bomb.src = explosionFrames[frame];
-        bomb.style.width = "150px"; // Resize if needed
+        bomb.style.width = "150px";
 
         const explosionInterval = setInterval(() => {
             frame++;
@@ -90,9 +98,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 bomb.src = explosionFrames[frame];
             } else {
                 clearInterval(explosionInterval);
-                bomb.style.display = "none"; // Hide bomb after explosion
+                bomb.style.display = "none";
             }
-        }, 100); // Explosion animation speed
+        }, 100);
     }
 
     function handleBombCollision(bomb) {
@@ -108,29 +116,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         checkGameStatus();
     }
 
-    function handleAnswerSelection(selectedOption, correctAnswer) {
+    function handleAnswerSelection(selectedOption, correctAnswerText) {
         const selectedBomb = bombs[selectedOption];
-        const selectedAnswer = selectedBomb.alt; // Using alt text to match answer
+        const selectedAnswerText = document.querySelector(`#options p:nth-child(${selectedOption.charCodeAt(0) - 64})`).textContent.split(': ')[1].trim().toLowerCase();
 
-        if (selectedAnswer === correctAnswer) {
+        console.log("Selected answer text:", selectedAnswerText);
+        console.log("Expected correct answer text:", correctAnswerText);
+
+        if (selectedAnswerText === correctAnswerText) {
             sounds.correct.play();
             score++;
             scoreEl.textContent = score;
             console.log("Correct answer selected. Score updated:", score);
-
-            stopBombs(); // Stop bomb animations
-            loadNextQuestion(); // Move to next question
+            lifeDeductedThisRound = false; // Reset life deduction
+            loadNextQuestion();
         } else {
-            console.log("Incorrect answer; triggering explosion on bomb.");
+            console.log("Incorrect answer selected; triggering explosion on bomb.");
             triggerExplosion(selectedBomb);
         }
-    }
-
-    function stopBombs() {
-        Object.values(bombs).forEach(bomb => {
-            bomb.style.animation = 'none';
-            bomb.onclick = null; // Disable clicks
-        });
     }
 
     function checkGameStatus() {
